@@ -35,6 +35,21 @@ func Read() (Config, error) {
 }
 
 func write(cfg Config) error {
+	fullPath, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(fullPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	if err := encoder.Encode(cfg); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -44,4 +59,9 @@ func getConfigFilePath() (string, error) {
 		return "", nil
 	}
 	return filepath.Join(homeDir, configFileName), nil
+}
+
+func (cfg *Config) SetUser(userName string) error {
+	cfg.CurrentUserName = userName
+	return write(*cfg)
 }
