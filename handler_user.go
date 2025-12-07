@@ -36,8 +36,8 @@ func handlerRegister(s *state, cmd command) error {
 
 	dbParams := database.CreateUserParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		Name:      name,
 	}
 
@@ -79,11 +79,11 @@ func handlerGetUsers(s *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("couldn't get users from database: %w", err)
 	}
-	suffix := ""
 
 	for _, user := range users {
+		suffix := ""
 		if user == current {
-			suffix = " (current)"
+			suffix = "(current)"
 		}
 		fmt.Printf("* %s %s\n", user, suffix)
 	}
